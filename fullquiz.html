@@ -1,3 +1,4 @@
+
 <!-- custom_fullquiz.html -->
 <head>
 <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:400,700" rel="stylesheet">
@@ -22,6 +23,7 @@
 
 <script>
     var scores = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    var totals = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     var weights = [-3, -2, -1, 1, 2, 3];
     var qn = 0;
     var answers = [];
@@ -61,7 +63,9 @@
     function next_question(mult) {
         var ax = quests[qn][0];
         var rate = quests[qn][1];
-        scores[ax] += mult * weights[rate];
+        var weight = weights[rate];
+        scores[ax] += mult * weight;
+        totals[ax] += Math.abs(mult * weight);
         answers[qn] = mult;
         qn++;
         if (qn < quests.length) {
@@ -76,26 +80,28 @@
         qn--;
         var ax = quests[qn][0];
         var rate = quests[qn][1];
-        scores[ax] -= answers[qn] * weights[rate];
+        var weight = weights[rate];
+        scores[ax] -= answers[qn] * weight;
+        totals[ax] -= Math.abs(answers[qn] * weight);
         init_question();
     }
 
-    function calc_score(score) {
-        const maxPossible = 30;
-        return Math.round(50 + (score / maxPossible) * 50);
+    function calc_score(score, total) {
+        if (total === 0) return 50;
+        return Math.round(50 + (score / total) * 50);
     }
 
     function results() {
         location.href = `results.html`
-            + `?a=${calc_score(scores[0])}`
-            + `&b=${calc_score(scores[1])}`
-            + `&c=${calc_score(scores[2])}`
-            + `&d=${calc_score(scores[3])}`
-            + `&e=${calc_score(scores[4])}`
-            + `&f=${calc_score(scores[5])}`
-            + `&g=${calc_score(scores[6])}`
-            + `&h=${calc_score(scores[7])}`
-            + `&i=${calc_score(scores[8])}`;
+            + `?a=${calc_score(scores[0], totals[0])}`
+            + `&b=${calc_score(scores[1], totals[1])}`
+            + `&c=${calc_score(scores[2], totals[2])}`
+            + `&d=${calc_score(scores[3], totals[3])}`
+            + `&e=${calc_score(scores[4], totals[4])}`
+            + `&f=${calc_score(scores[5], totals[5])}`
+            + `&g=${calc_score(scores[6], totals[6])}`
+            + `&h=${calc_score(scores[7], totals[7])}`
+            + `&i=${calc_score(scores[8], totals[8])}`;
     }
 </script>
 </body>
